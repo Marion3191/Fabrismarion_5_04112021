@@ -1,38 +1,42 @@
-// Index  (appel de l'API)
-fetch ("http://localhost:3000/api/products")
-.then(function(reponse){
-if(reponse.ok){
-    return reponse.json();
-    
-}
-})
-.then(function(kanapéList){
-    console.log(kanapéList);
-    let articleContent ='';
-    let cardNbr = 0 ;
-    let imgid =`imgId`;
-    for(let kanap of kanapéList){
-        //creer ici chaque tuile d article
-        imgid =  "imgID" + cardNbr;
-        cardNbr ++;
- 
-        articleContent += ` <a href="./product.html?id=42">
-        <article id="${kanap.name}">
-          <img id="${imgid}" src="${kanap.imageUrl}" alt="${kanap.altTxt}">
-          <h3 id="${kanap.name}" class="productName">${kanap.name}</h3>
-          <p id="description" class="productDescription">${kanap.description}</p>
-        </article>
-      </a>`;
-        document.querySelector("#items").innerHTML = articleContent;
-        console.log(imgid);
+// Index  
+//boucle de la card 
+(async function() {
+    const Products = await getProducts()
+   for (kanape of Products) {
+    displayArticle(kanape)
     }
-    
-    
+})()
+ 
+//(appel de l'API)
+function getProducts(){
+   return fetch("http://localhost:3000/api/products")
+   
+   .then(function(Response) {
+       return Response.json()
+   })
+   .then(function(Products){
+     return Products 
+   })
+   .catch(function(error){
+       alert(error)
+   })
+}
 
-})
-.catch(function(err){
-    //il y a une erreur
-});
+// création de la card
+function displayArticle(kanape) {
+    document.querySelector("#items").innerHTML += ` <a href="./product.html?id=${kanape._id}" >
+     <article>
+    <img src="${kanape.imageUrl}" alt="${kanape.altTxt}">
+    <h3 class="productName">${kanape.name}</h3>
+    <p class="productDescription">${kanape.description}</p>
+  </article>
+  </a> `;
+}
+
+//liens pages produits
+var str = "http://localhost:3000/api/products/html?id=_id";
+var url = new URL(str);
+var id = url.searchParams.get("id");
+console.log(id);
 
 
-        //affichage produit 
