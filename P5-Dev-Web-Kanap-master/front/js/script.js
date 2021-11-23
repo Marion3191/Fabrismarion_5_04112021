@@ -33,10 +33,5 @@ function displayArticle(kanape) {
   </a> `;
 }
 
-//liens pages produits
-var str = "http://localhost:3000/api/products/html?id=_id";
-var url = new URL(str);
-var id = url.searchParams.get("id");
-console.log(id);
 
 
