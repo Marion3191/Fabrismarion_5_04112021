@@ -55,21 +55,12 @@ let optionsProduct = {
 
 // variable "enregister dans la localstorage" (key , value)
 let stockage = JSON.parse(localStorage.getItem("kanape"));
-console.log(stockage);
 
-if(stockage){    
-    stockage.push(optionsProduct);
-    localStorage.setItem("kanape", JSON.stringify(stockage));    
-    console.log("if");
-}
+if(!stockage)
+    stockage = [];  
+  
+stockage.push(optionsProduct);
+  
 
-else{
-  stockage = [];
-  stockage.push(optionsProduct);
-  localStorage.setItem("kanape", JSON.stringify(stockage));  
-  console.log("else");
-}
-});
-}
 
-console.log(localStorage);
+localStorage.setItem("kanape", JSON.stringify(stockage));
