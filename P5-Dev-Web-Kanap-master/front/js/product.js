@@ -12,7 +12,7 @@ function getArticleId() {
     //apell a l'API
 function getArticle(articleId) {
     return fetch(`http://localhost:3000/api/products/${articleId}`)
-  
+
     .then(function(Response) {
         return Response.json()
     })
@@ -23,6 +23,7 @@ function getArticle(articleId) {
         alert(error)
     })
 }
+
 //Affichage d'un produit celon son ID
 function displayArticle(article) {
   document.querySelector("#title").innerHTML += `${article.name}`;
@@ -32,6 +33,7 @@ function displayArticle(article) {
   for(colors of article.colors){
       document.querySelector("#colors").innerHTML += `<option value="${colors}">${colors}</option>`;
   }
+  
 
 //selection du btn ajouter l'article au panier
 const btnEnvoyer = document.querySelector("#addToCart");
@@ -41,27 +43,38 @@ const btnEnvoyer = document.querySelector("#addToCart");
 btnEnvoyer.addEventListener("click", (Event)=>{
     Event.preventDefault();
 
-//option de quantité et de couleur
-const couleurProduct = document.getElementById("colors").value;
+    //option de quantité et de couleur
+    const couleurProduct = document.getElementById("colors").value;
 
-const quantiteProduct = quantity.value;
+    const quantiteProduct = quantity.value;
 
-// récuperation des choix client
-let optionsProduct = {
-    id_ProduitSelectionner: article._id,
-    couleur_Produit: couleurProduct,
-    quantite: quantiteProduct,
-}; 
+    // récuperation des choix client
+    let optionsProduct = {
+        id_ProduitSelectionner: article._id,
+        couleur_Produit: couleurProduct,
+        quantite: quantiteProduct,
+    }; 
 
-// variable "enregister dans la localstorage" (key , value)
-let stockage = JSON.parse(localStorage.getItem("kanape"));
-console.log(stockage);
-if(!stockage)
+    // variable "enregister dans la localstorage" (key , value)
+    let stockage = JSON.parse(localStorage.getItem("kanape"));
+    console.log(stockage);
 
-    stockage = [];  
-stockage.push(optionsProduct);
- 
-for(stockage of localStorage){
-    if( localStorage.id , localStorage.colors += quantite);
-};
-
+    if(!stockage){    
+        stockage = [];
+        console.log("if");
+    } 
+    var existant = false;
+    for(k=0; k<stockage.length;k++){
+        if(stockage[k].couleur_Produit == optionsProduct.couleur_Produit && stockage[k].id_ProduitSelectionner == optionsProduct.id_ProduitSelectionner){
+            console.log("couleur identique et modèle aussi");
+            stockage[k].quantite = parseInt(stockage[k].quantite) + parseInt(optionsProduct.quantite);
+            existant = true;
+       }
+    }
+    if(!existant){
+        stockage.push(optionsProduct);
+    }
+    localStorage.setItem("kanape", JSON.stringify(stockage));   
+}
+);
+}
