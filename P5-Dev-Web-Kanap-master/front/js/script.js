@@ -27,7 +27,7 @@ function displayArticle(kanape) {
     document.querySelector("#items").innerHTML += ` <a href="./product.html?id=${kanape._id}" >
      <article>
     <img src="${kanape.imageUrl}" alt="${kanape.altTxt}">
-    <h3 class="productName">${kanape.name}</h3>
+    <h3 classdisplayArticle(kanape)="productName">${kanape.name}</h3>
     <p class="productDescription">${kanape.description}</p>
   </article>
   </a> `;

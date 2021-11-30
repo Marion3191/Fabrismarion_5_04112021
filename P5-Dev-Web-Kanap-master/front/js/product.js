@@ -63,6 +63,7 @@ btnEnvoyer.addEventListener("click", (Event)=>{
         stockage = [];
         console.log("if");
     } 
+    //boucle pour incrementation de la quantité
     var existant = false;
     for(k=0; k<stockage.length;k++){
         if(stockage[k].couleur_Produit == optionsProduct.couleur_Produit && stockage[k].id_ProduitSelectionner == optionsProduct.id_ProduitSelectionner){
