@@ -61,21 +61,26 @@ btnEnvoyer.addEventListener("click", (Event)=>{
 
     if(!stockage){    
         stockage = [];
-        console.log("if");
     } 
     //boucle pour incrementation de la quantité
     var existant = false;
-    for(k=0; k<stockage.length;k++){
+    for(let k=0; k<stockage.length;k++){
         if(stockage[k].couleur_Produit == optionsProduct.couleur_Produit && stockage[k].id_ProduitSelectionner == optionsProduct.id_ProduitSelectionner){
-            console.log("couleur identique et modèle aussi");
             stockage[k].quantite = parseInt(stockage[k].quantite) + parseInt(optionsProduct.quantite);
             existant = true;
        }
+    
+  
+    if(couleur_Produit == null){
+        alert('error')
     }
+}
     if(!existant){
         stockage.push(optionsProduct);
     }
+   
     localStorage.setItem("kanape", JSON.stringify(stockage));   
 }
+
 );
 }
