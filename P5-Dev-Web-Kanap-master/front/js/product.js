@@ -42,7 +42,7 @@ const btnEnvoyer = document.querySelector("#addToCart");
 //ecouter le bouton et envoyer le panier
 btnEnvoyer.addEventListener("click", (Event)=>{
     Event.preventDefault();
-
+    var noErr =  true;
     //option de quantité et de couleur
     const couleurProduct = document.getElementById("colors").value;
 
@@ -68,19 +68,28 @@ btnEnvoyer.addEventListener("click", (Event)=>{
         if(stockage[k].couleur_Produit == optionsProduct.couleur_Produit && stockage[k].id_ProduitSelectionner == optionsProduct.id_ProduitSelectionner){
             stockage[k].quantite = parseInt(stockage[k].quantite) + parseInt(optionsProduct.quantite);
             existant = true;
-       }
-    
-  
-    if(couleur_Produit == null){
-        alert('error')
+        }
+        console.log(optionsProduct.couleur_Produit);
     }
-}
+
+    if(!optionsProduct.couleur_Produit)
+    {
+        alert("errColor");
+        noErr = false;
+    }
+    if(optionsProduct.quantite == 0)
+    {
+        alert("errQte");
+        noErr = false;
+    }
+
     if(!existant){
         stockage.push(optionsProduct);
     }
-   
-    localStorage.setItem("kanape", JSON.stringify(stockage));   
+    if(noErr){
+        localStorage.setItem("kanape", JSON.stringify(stockage));
+    }
+       
 }
-
 );
 }
