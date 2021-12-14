@@ -71,7 +71,7 @@ btnEnvoyer.addEventListener("click", (Event)=>{
         }
         console.log(optionsProduct.couleur_Produit);
     }
-
+// message d'erreur si couleur ou quantiter non selectionner
     if(!optionsProduct.couleur_Produit)
     {
         alert("errColor");

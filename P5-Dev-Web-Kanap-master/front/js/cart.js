@@ -4,8 +4,11 @@ let stockage = JSON.parse(localStorage.getItem("kanape"));
 const pagePanier = document.querySelector("#cart__items");
 //appel de l'api
 const  dataProducts = fetch("http://localhost:3000/api/products");
-
+//tableau de stockage de IDs
 let products = [];
+
+
+let test = [];
 
 function getInfos(apiList,id){
   let toReturn=['img','imgAlt','nom','prix'];
@@ -23,33 +26,36 @@ function getInfos(apiList,id){
 dataProducts.then(async(response)=>{
   const produits = await response.json();
   affichage(produits);
-})
-.catch((err)=> {
+}).catch((err)=> {
   alert(err)
 });
+
 //variable pour total prix et quantité
  var totArt = 0;
  var totalPrice = 0;
 
-function affichage(apiList)
-{
+function affichage(apiList){
+  //Verifiction de l'existence du local storage
   if(!stockage){    
     stockage = [];
     let produitsPanier = [] ;
   }
 
   let toDisplay=['img','imgAlt','nom','prix'];
-
+  
+// boucle qui parcour l'le local storage
   for (let k = 0; k < stockage.length; k++) {
+    //remplissage du tableau contenant uniquement les id produits
     products[k]= stockage[k].id_ProduitSelectionner;
 
-    toDisplay=getInfos(apiList,stockage[k].id_ProduitSelectionner);
     //calcul des totaux
+    toDisplay=getInfos(apiList,stockage[k].id_ProduitSelectionner);
     totalPrice += parseInt(toDisplay.prix) * parseInt(stockage[k].quantite);
     totArt += parseInt(stockage[k].quantite);
    
+    //Ecriture dans l'html courant (innerHTML)
     document.querySelector("#cart__items").innerHTML += `
-        <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
+        <article class="cart__item" data-id="${stockage[k].id_ProduitSelectionner}" data-color="{product-color}">
             <div class="cart__item__img">
               <img src="${toDisplay.img}" alt="${toDisplay.imgAlt}">
             </div>
@@ -70,26 +76,35 @@ function affichage(apiList)
               </div>
             </div>
           </article>`;
+    
+          test[k] =  document.querySelector(".deleteItem");
+          console.log(test);
+          test[k].addEventListener("click", (e)=>{
+            e.preventDefault();
+            alert("hello");
+          })
+          var R1 = test[k].closest(".cart__item");
+          console.log(R1);
+    /*
+    */
+
     }
-  
+  // affichage des totaux Quantite et prix
     document.querySelector("#totalQuantity").innerHTML += totArt;
     document.querySelector("#totalPrice").innerHTML += totalPrice;
 };
 
-//modifier les quantités et supprimer les articles
 
-let input = document.querySelector('.input');
-let result = document.querySelector('[value=""]');
-input.addEventListener(`change`, function() {
-  result.Number = this.value;
-});
+for (let k = 0; k < stockage.length; k++) {
 
+}
+console.log(test);
 
-
-//recuperation des valeurs formulaire ---> local storage
+//recuperation des valeurs formulaire
 const btnCommander = document.querySelector("#order");
 btnCommander.addEventListener("click", (e)=>{
   e.preventDefault();
+  //delcaration du contact a envoyer en POST
   const contact = {
     firstName: document.querySelector("#firstName").value,
     lastName:document.querySelector("#lastName").value,
@@ -101,13 +116,15 @@ btnCommander.addEventListener("click", (e)=>{
   var regExPrenomNomVille = /^[A-Za-z-]{3,33}$/;
   var regExAdresse = /^[a-zA-Z0-9\s,.'-]{3,}$/;
   var regExEmail =  /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  
+  // controle du formulaire 
   function controlePrenom() {
     const Prenom = contact.firstName;
     if (regExPrenomNomVille.test(Prenom)) {
-  return true;
+       return true;
     }else {
-    document.querySelector("#firstNameErrorMsg").innerHTML = "veuillez remplir le champ Prenom";
-    return false;
+      document.querySelector("#firstNameErrorMsg").innerHTML = "veuillez remplir le champ Prenom";
+      return false;
     }
   };
   function controleNom() {
@@ -122,55 +139,73 @@ btnCommander.addEventListener("click", (e)=>{
   function controleVille() {
     const Ville = contact.city;
     if (regExPrenomNomVille.test(Ville)) {
-  return true;
+      return true;
     }else {
       document.querySelector("#cityErrorMsg").innerHTML = "veuillez remplir le champ Ville"; 
-    return false;
+      return false;
     }
   };
-  function controleAdresse() {
+  function controleAdresse(){
     const Adresse = contact.address;
     if (regExAdresse.test(Adresse)) {
-  return true;
-    }else {
+      return true;
+    }else{
       document.querySelector("#addressErrorMsg").innerHTML = "veuillez remplir le champ Adresse";
-    return false;
+      return false;
     }
   };
-function controleEmail() {
-  const Email = contact.email;
-  if (regExEmail.test(Email)) {
- return true;
-  }else {
-    document.querySelector("#emailErrorMsg").innerHTML = "veuillez remplir le champ Email";
-  return false;
+  function controleEmail(){
+    const Email = contact.email;
+    if (regExEmail.test(Email)){
+    return true;
+    }else{
+      document.querySelector("#emailErrorMsg").innerHTML = "veuillez remplir le champ Email";
+    return false;
+    }
+  };  
+  //affichage du message d'erreur si une des conditions nest pas remplie
+  if(controlePrenom() && controleNom() && controleVille() && controleAdresse()  && controleEmail()) {
+    localStorage.setItem("Contact", JSON.stringify(contact));
+  }else{
+    alert("veuillez remplir le formulaire");
   }
-};
-if(controlePrenom() && controleNom() && controleVille() && controleAdresse()  && controleEmail()) {
-  localStorage.setItem("Contact", JSON.stringify(contact));
-}else{
-  alert("veuillez remplir le formulaire");
-}
-
-
-//envoyer vers le serveur 
-const url = "http://localhost:3000/api/products/order";
-let aEnvoyer = {
-  contact,
-  products,
-}
-
-fetch(url, {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json'
-    },
+//envoye vers le serveur et reccuperation du num de commande
+  const url = "http://localhost:3000/api/products/order";
+  let aEnvoyer = {
+    contact,
+    products,
+  }
+  //requete au serveur pour recuperer orderId
+  fetch(url, {
+    method: 'POST',
     body: JSON.stringify(aEnvoyer),
- }).then(result =>{
-  console.log(result);
- }).catch(err => {
-  console.error(err);
+    headers: { 
+      'Content-Type': 'application/json'
+    },      
+  }).then(result =>{
+    console.log(result);
+  }).catch(err => {
+    console.error(err);
+  });
+
 });
 
 
-});
+//modifier les quantités dans le panier
+/*for (let k = 0; k < 3; k++) {
+  console.log(test[k]);
+  test[k].addEventListener("click", (e)=>{
+    e.preventDefault();
+    alert("hello");
+  })
+}
+//suppression des articles 
+/*const Supprimer = document.querySelector(".deleteItem");
+Supprimer.addEventListener("click", (e)=>{
+  e.preventDefault();
+  var el = document.getElementsByClassName('deleteItem');
+  console.log(deleteItem);
+  var R1 = el.closest(".cart__item");
+ 
+})
+*/
