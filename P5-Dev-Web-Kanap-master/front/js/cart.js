@@ -6,7 +6,8 @@ const pagePanier = document.querySelector("#cart__items");
 const  dataProducts = fetch("http://localhost:3000/api/products");
 //tableau de stockage de IDs
 let products = [];
-
+//OrderId
+let orderid = "";
 
 let test = [];
 
@@ -23,6 +24,15 @@ function getInfos(apiList,id){
   }
 }
 
+//Suppression d'un article en local storage
+function suppr( idProd, colorProd)
+{
+  //parcourir la stocakage (for)
+    //test si le stockage[k].color = colorProd && stockage[k].id = idProd
+      //si test ok supprimer element de listCart : utiliser la fonction splice 
+}
+
+
 dataProducts.then(async(response)=>{
   const produits = await response.json();
   affichage(produits);
@@ -31,8 +41,11 @@ dataProducts.then(async(response)=>{
 });
 
 //variable pour total prix et quantité
- var totArt = 0;
- var totalPrice = 0;
+var totArt = 0;
+var totalPrice = 0;
+
+
+
 
 function affichage(apiList){
   //Verifiction de l'existence du local storage
@@ -51,11 +64,11 @@ function affichage(apiList){
     //calcul des totaux
     toDisplay=getInfos(apiList,stockage[k].id_ProduitSelectionner);
     totalPrice += parseInt(toDisplay.prix) * parseInt(stockage[k].quantite);
-    totArt += parseInt(stockage[k].quantite);
+   totArt += parseInt(stockage[k].quantite);
    
     //Ecriture dans l'html courant (innerHTML)
     document.querySelector("#cart__items").innerHTML += `
-        <article class="cart__item" data-id="${stockage[k].id_ProduitSelectionner}" data-color="{product-color}">
+        <article class="cart__item" data-id="${stockage[k].id_ProduitSelectionner}" data-color="${stockage[k].couleur_Produit}">
             <div class="cart__item__img">
               <img src="${toDisplay.img}" alt="${toDisplay.imgAlt}">
             </div>
@@ -76,29 +89,34 @@ function affichage(apiList){
               </div>
             </div>
           </article>`;
-    
-          test[k] =  document.querySelector(".deleteItem");
-          console.log(test);
-          test[k].addEventListener("click", (e)=>{
-            e.preventDefault();
-            alert("hello");
-          })
-          var R1 = test[k].closest(".cart__item");
-          console.log(R1);
-    /*
-    */
 
-    }
+
+          //suppresion des articles
+          let deleteBtn = document.querySelectorAll('.deleteItem');
+
+          for(let btn of deleteBtn){
+              btn.addEventListener('click', (e) =>{
+                console.log(btn);
+                console.log(btn.closest("article"));
+                //appel de la fonction de suppression ( savoir commment recuperer exactement le dataID et le colorID)
+                  //suppr(dataID, coloID);
+               
+              })
+
+              //modification des Quantités dans le panier
+          }
+
+}  
   // affichage des totaux Quantite et prix
     document.querySelector("#totalQuantity").innerHTML += totArt;
-    document.querySelector("#totalPrice").innerHTML += totalPrice;
+    document.querySelector("#totalPrice").innerHTML += totalPrice;
 };
-
+   
+  
 
 for (let k = 0; k < stockage.length; k++) {
 
 }
-console.log(test);
 
 //recuperation des valeurs formulaire
 const btnCommander = document.querySelector("#order");
@@ -182,9 +200,13 @@ btnCommander.addEventListener("click", (e)=>{
     headers: { 
       'Content-Type': 'application/json'
     },      
-  }).then(result =>{
-    console.log(result);
-  }).catch(err => {
+  })
+  .then(result => result.json())
+  .then(data => {
+    orderid = data.orderId;
+    console.log(orderid);
+  })
+  .catch(err => {
     console.error(err);
   });
 
