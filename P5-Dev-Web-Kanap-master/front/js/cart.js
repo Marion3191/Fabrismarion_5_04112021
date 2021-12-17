@@ -24,6 +24,13 @@ function getInfos(apiList,id){
   }
 }
 
+dataProducts.then(async(response)=>{
+  const produits = await response.json();
+  affichage(produits);
+}).catch((err)=> {
+  alert(err)
+});
+
 //Suppression d'un article en local storage
 function suppr( idProd, colorProd)
 {
@@ -34,6 +41,8 @@ function suppr( idProd, colorProd)
       }
   }
 }
+
+//modification des quantités
 function change( idProd, colorProd, newqte)
 {
   //parcourir la stocakage (for)
@@ -46,12 +55,7 @@ function change( idProd, colorProd, newqte)
   }
 }
 
-dataProducts.then(async(response)=>{
-  const produits = await response.json();
-  affichage(produits);
-}).catch((err)=> {
-  alert(err)
-});
+
 
 //variable pour total prix et quantité
 var totArt = 0;
@@ -108,14 +112,12 @@ function affichage(apiList){
           let deleteBtn = document.querySelectorAll('.deleteItem');
           for(let btn of deleteBtn){
               btn.addEventListener('click', (e) =>{
-                console.log(btn);
                 suppr(btn.closest("article").getAttribute("data-id"),btn.closest("article").getAttribute("data-color"));
                 location.reload();               
               })
           }
           //changement des quantité
           let changeBtn = document.querySelectorAll('.itemQuantity');
-          console.log(changeBtn)
           for(let btn of changeBtn){
             btn.addEventListener('change', (e) =>{
               change(btn.closest("article").getAttribute("data-id"),btn.closest("article").getAttribute("data-color"),btn.value);
@@ -221,30 +223,15 @@ btnCommander.addEventListener("click", (e)=>{
   .then(result => result.json())
   .then(data => {
     orderid = data.orderId;
-    console.log(orderid);
+    console.log(orderid)
   })
   .catch(err => {
     console.error(err);
   });
 
+// récupération de l'id et stockage
+localStorage.setItem("orderid",  orderid);
+
+//envoie sur la page confirmation 
+window.location = "confirmation.html"; 
 });
-
-
-//modifier les quantités dans le panier
-/*for (let k = 0; k < 3; k++) {
-  console.log(test[k]);
-  test[k].addEventListener("click", (e)=>{
-    e.preventDefault();
-    alert("hello");
-  })
-}
-//suppression des articles 
-/*const Supprimer = document.querySelector(".deleteItem");
-Supprimer.addEventListener("click", (e)=>{
-  e.preventDefault();
-  var el = document.getElementsByClassName('deleteItem');
-  console.log(deleteItem);
-  var R1 = el.closest(".cart__item");
- 
-})
-*/
