@@ -27,11 +27,24 @@ function getInfos(apiList,id){
 //Suppression d'un article en local storage
 function suppr( idProd, colorProd)
 {
-  //parcourir la stocakage (for)
-    //test si le stockage[k].color = colorProd && stockage[k].id = idProd
-      //si test ok supprimer element de listCart : utiliser la fonction splice 
+  for (let k = 0; k < stockage.length; k++) {
+      if(stockage[k].id_ProduitSelectionner == idProd && stockage[k].couleur_Produit == colorProd){
+        stockage.splice(k,1);
+        localStorage.setItem('kanape',JSON.stringify(stockage));
+      }
+  }
 }
-
+function change( idProd, colorProd, newqte)
+{
+  //parcourir la stocakage (for)
+  for (let k = 0; k < stockage.length; k++) {
+      if(stockage[k].id_ProduitSelectionner == idProd && stockage[k].couleur_Produit == colorProd){
+        console.log(newqte);
+        stockage[k].quantite = newqte;
+        localStorage.setItem('kanape',JSON.stringify(stockage));
+      }
+  }
+}
 
 dataProducts.then(async(response)=>{
   const produits = await response.json();
@@ -93,17 +106,21 @@ function affichage(apiList){
 
           //suppresion des articles
           let deleteBtn = document.querySelectorAll('.deleteItem');
-
           for(let btn of deleteBtn){
               btn.addEventListener('click', (e) =>{
                 console.log(btn);
-                console.log(btn.closest("article"));
-                //appel de la fonction de suppression ( savoir commment recuperer exactement le dataID et le colorID)
-                  //suppr(dataID, coloID);
-               
+                suppr(btn.closest("article").getAttribute("data-id"),btn.closest("article").getAttribute("data-color"));
+                location.reload();               
               })
-
-              //modification des Quantités dans le panier
+          }
+          //changement des quantité
+          let changeBtn = document.querySelectorAll('.itemQuantity');
+          console.log(changeBtn)
+          for(let btn of changeBtn){
+            btn.addEventListener('change', (e) =>{
+              change(btn.closest("article").getAttribute("data-id"),btn.closest("article").getAttribute("data-color"),btn.value);
+              location.reload();
+            })
           }
 
 }  
