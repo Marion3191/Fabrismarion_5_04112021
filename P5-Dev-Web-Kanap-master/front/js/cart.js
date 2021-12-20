@@ -224,14 +224,10 @@ btnCommander.addEventListener("click", (e)=>{
   .then(data => {
     orderid = data.orderId;
     console.log(orderid)
+    //envoie sur la page confirmation 
+    window.location = "confirmation.html?orderid=" + orderid; 
   })
   .catch(err => {
     console.error(err);
   });
-
-// récupération de l'id et stockage
-localStorage.setItem("orderid",  orderid);
-
-//envoie sur la page confirmation 
-window.location = "confirmation.html"; 
 });

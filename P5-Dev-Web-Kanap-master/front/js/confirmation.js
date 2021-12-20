@@ -1,14 +1,7 @@
 //récuperation de l'orderId dans le localstorage
-const idCom = localStorage.getItem("orderid");
+function numeroCommande() {
+    return new URL(location.href).searchParams.get("orderid")
+    }
+    console.log(new URL(location.href).searchParams.get("orderid"));
 
-
-//selection du dom pour le positionnement
-const pageConfirmation = document.querySelector("#orderId").innerHTML += `${idCom}`
-
-
-//effecaer le local stage
-function suppLocalStorage(key){
-    localStorage.removeItem(key);
-};
-
-suppLocalStorage("orderid")
+    document.querySelector("#orderId").innerHTML += `<span id="orderId">${numeroCommande()}</span></p>`;
