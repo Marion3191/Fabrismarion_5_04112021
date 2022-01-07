@@ -30,6 +30,7 @@ function displayArticle(article) {
   document.querySelector("#description").innerHTML += `${article.description}`;
   document.querySelector("#price").innerHTML += `${article.price}`;
   document.querySelector("div.item__img").innerHTML += `<img src="${article.imageUrl}" alt="${article.altTxt}">`;
+  //boucle qui parcour toute les couleurs disponible 
   for(colors of article.colors){
       document.querySelector("#colors").innerHTML += `<option value="${colors}">${colors}</option>`;
   }
@@ -43,7 +44,7 @@ const btnEnvoyer = document.querySelector("#addToCart");
 btnEnvoyer.addEventListener("click", (Event)=>{
     Event.preventDefault();
     var noErr =  true;
-    //option de quantité et de couleur
+    //option de quantité et de couleur 
     const couleurProduct = document.getElementById("colors").value;
 
     const quantiteProduct = quantity.value;

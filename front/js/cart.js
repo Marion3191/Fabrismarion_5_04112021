@@ -8,9 +8,10 @@ const  dataProducts = fetch("http://localhost:3000/api/products");
 let products = [];
 //OrderId
 let orderid = "";
+//validité formulaire
+let checkValid = false;
 
-let test = [];
-
+//récuperation des donner en fonction de Lid
 function getInfos(apiList,id){
   let toReturn=['img','imgAlt','nom','prix'];
   for (let k = 0; k < apiList.length; k++) {
@@ -73,7 +74,7 @@ function affichage(apiList){
 
   let toDisplay=['img','imgAlt','nom','prix'];
   
-// boucle qui parcour l'le local storage
+// boucle qui parcour le local storage
   for (let k = 0; k < stockage.length; k++) {
     //remplissage du tableau contenant uniquement les id produits
     products[k]= stockage[k].id_ProduitSelectionner;
@@ -203,9 +204,10 @@ btnCommander.addEventListener("click", (e)=>{
   //affichage du message d'erreur si une des conditions nest pas remplie
   if(controlePrenom() && controleNom() && controleVille() && controleAdresse()  && controleEmail()) {
     localStorage.setItem("Contact", JSON.stringify(contact));
+  checkValid = true; 
   }else{
     alert("veuillez remplir le formulaire");
-  }
+  };
 //envoye vers le serveur et reccuperation du num de commande
   const url = "http://localhost:3000/api/products/order";
   let aEnvoyer = {
@@ -225,7 +227,10 @@ btnCommander.addEventListener("click", (e)=>{
     orderid = data.orderId;
     console.log(orderid)
     //envoie sur la page confirmation 
-    window.location = "confirmation.html?orderid=" + orderid; 
+    if(checkValid)
+    {
+      window.location = "confirmation.html?orderid=" + orderid;
+    }
   })
   .catch(err => {
     console.error(err);
