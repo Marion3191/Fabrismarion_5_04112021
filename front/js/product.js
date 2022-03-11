@@ -5,8 +5,8 @@
 })()
 
 //recuperation de L'ID
-function getArticleId() {
-    return new URL(location.href).searchParams.get("id")
+function getArticleId() {  ret
+  urn new URL(location.href).searchParams.get("id")
     }
 
     //apell a l'API
